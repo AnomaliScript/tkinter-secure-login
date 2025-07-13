@@ -1,103 +1,99 @@
 import customtkinter as ctk
 import tkinter.messagebox as tkmb
+from CONST import password_map, permissions, authentication, authorization
 
 # Selecting GUI theme - dark, light , system (for system default)
 ctk.set_appearance_mode("dark")
 
 # Selecting color theme - blue, green, dark-blue
-ctk.set_default_color_theme("blue")
+ctk.set_default_color_theme("green")
 
 app = ctk.CTk()
 app.geometry("500x500")
-app.title("Modern Login UI using Customtkinter")
+app.title("Brandon's Login System")
 
-password_map = {
-    'AnomaliScript' : '24Af7NP5XassY$@',
-    'Regnarts' : 'c00lk|d',
-    'MrPumpkin' : 'm&ng0',
-    'DiligentBuilder' : 's4ck0feye$',
-    'Joe' : 'what$up3verybody',
-    'Ammar' : 's1ckdUd3',
-    'Issac' : 'He%m4n',
-    'Maro' : 'm@#n3rW',
-    'Lexie' : 'g0OdmYrn][g',
-    'Tanner' : '0nth3ke&s',
-    'London' : 'pr3ci@teiT',
-    'Eli' : 'h3re4ndN+w',
-    'Ryan' : 'aVp3rs*n',
-    'Josh' : 'P4rad^dD!e'
-}
+# ChatGPT Code Example
 
-# To be used
-permissions = {
-    'o' : 'the dead bodies',
-    'm' : 'snack stash',
-    'u' : 'regular services',
-    'g' : 'limited services'
-}
+import customtkinter as ctk
 
-def authentication(uname):
-    match uname:
-        # Owner (me, ofc)
-        case 'AnomaliScript':
-            return 'o'
-        # Moderators
-        case 'Regnarts' | 'MrPumpkin' | 'DiligentBuilder':
-            return 'm'
-        # Users
-        case 'Joe' | 'Ammar' | 'Issac' | 'Maro' | 'Lexie' | 'Tanner' | 'London' | 'Eli' | 'Ryan' | 'Josh':
-            return 'u'
-        # Guests
-        case 'Guest' | 'guest':
-            return 'g'
-        # Not Valid
-        case _:
-            tkmb.showerror(title="Login Failed",message="Invalid Username")
-            return None
+class LoginPage(ctk.CTkFrame):
+    def __init__(self, master, controller):
+        super().__init__(master)
+        self.controller = controller
+
+        label = ctk.CTkLabel(self, text="Login Page")
+        label.pack(pady=12)
+
+        self.username = ctk.CTkEntry(self, placeholder_text="Username")
+        self.username.pack(pady=8)
+
+        self.password = ctk.CTkEntry(self, placeholder_text="Password", show="*")
+        self.password.pack(pady=8)
+
+        login_btn = ctk.CTkButton(self, text="Login", command=self.login)
+        login_btn.pack(pady=8)
+
+    def login(self):
+        new_window = ctk.CTkToplevel(app)
+
+        new_window.title("Brandon's TKinter Login System")
+
+        new_window.geometry("350x150")
+
+        self.controller.username, username = self.username.get()
         
-def authorization(uname, stat):
-    if (user_pass.get() == password_map[uname]):
-        return permissions[stat]
-    else:
-        tkmb.showwarning(title='Wrong password', message='Please check your password')
+        # Authentication
+        self.controller.status = authentication(username) if authentication(username) != None else tkmb.showerror(title="Login Failed", message="Invalid Username")
+        if (self.username.get() != password_map[self.username]):
+            self.controller.show_frame("DashboardPage")
+            tkmb.showwarning(title='Wrong password', message='Please check your password')
+        ctk.CTkLabel(new_window,text=f"Welcome, {username}!").pack()
+
+
+class DashboardPage(ctk.CTkFrame):
+    def __init__(self, master, controller):
+        super().__init__(master)
+        self.controller = controller
+
+        label = ctk.CTkLabel(self, text="Welcome to the Dashboard!")
+        label.pack(pady=12)
+
+        # Authorization
+        permissions = authorization(self.controller.username, self.controller.status)
+        for p in permissions:
             
 
-def login():
-    new_window = ctk.CTkToplevel(app)
-
-    new_window.title("Brandon's TKinter Login System")
-
-    new_window.geometry("350x150")
-
-    username = user_entry.get()
-    status = authentication(username)
-    permissions = authorization(username, status)
-    ctk.CTkLabel(new_window,text=f"Welcome, {username}! you have access to {permissions}").pack()
+        back_btn = ctk.CTkButton(self, text="Log Out", command=lambda: controller.show_frame("LoginPage"))
+        back_btn.pack(pady=8)
 
 
-label = ctk.CTkLabel(app,text="This is the main UI page")
+class MainApp(ctk.CTk):
+    def __init__(self):
+        super().__init__()
 
-label.pack(pady=20)
+        self.title("CTk Secure Sign-In Simulator")
+        self.geometry("400x300")
+
+        # Page container
+        self.pages = {}
+
+        for PageClass in (LoginPage, DashboardPage):
+            page_name = PageClass.__name__
+            frame = PageClass(master=self, controller=self)
+            self.pages[page_name] = frame
+            frame.pack(fill="both", expand=True)
+            frame.pack_forget()
+
+        self.show_frame("LoginPage")
+
+    def show_frame(self, page_name):
+        for frame in self.pages.values():
+            frame.pack_forget()
+        self.pages[page_name].pack(fill="both", expand=True)
 
 
-frame = ctk.CTkFrame(master=app)
-frame.pack(pady=20,padx=40,fill='both',expand=True)
-
-label = ctk.CTkLabel(master=frame,text='Modern Login System UI')
-label.pack(pady=12,padx=10)
-
-user_entry= ctk.CTkEntry(master=frame,placeholder_text="Username")
-user_entry.pack(pady=12,padx=10)
-
-user_pass= ctk.CTkEntry(master=frame,placeholder_text="Password",show="*")
-user_pass.pack(pady=12,padx=10)
-
-
-button = ctk.CTkButton(master=frame,text='Login',command=login)
-button.pack(pady=12,padx=10)
-
-checkbox = ctk.CTkCheckBox(master=frame,text='Remember Me')
-checkbox.pack(pady=12,padx=10)
-
-
-app.mainloop()
+if __name__ == "__main__":
+    ctk.set_appearance_mode("dark")
+    ctk.set_default_color_theme("blue")
+    app = MainApp()
+    app.mainloop()
