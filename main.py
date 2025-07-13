@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import tkinter.messagebox as tkmb
-from CONST import password_map, permissions, authentication, authorization
+from CONST import password_map, authentication, authorization
 
 # Selecting GUI theme - dark, light , system (for system default)
 ctk.set_appearance_mode("dark")
@@ -59,9 +59,7 @@ class DashboardPage(ctk.CTkFrame):
         label.pack(pady=12)
 
         # Authorization
-        permissions = authorization(self.controller.username, self.controller.status)
-        for p in permissions:
-            
+        permissions, personals = authorization(self.controller.username, self.controller.status)
 
         back_btn = ctk.CTkButton(self, text="Log Out", command=lambda: controller.show_frame("LoginPage"))
         back_btn.pack(pady=8)

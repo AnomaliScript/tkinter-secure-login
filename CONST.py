@@ -17,10 +17,10 @@ password_map = {
 
 # To be used
 all_permissions = {
-    'o' : ['the dead bodies', 'journal', 'sketchbook', '1Password password'],
-    'm' : ['snack stash'],
-    'u' : ['regular services'],
-    'g' : ['limited services'], 
+    4 : ['the dead bodies', 'journal', 'sketchbook', '1Password password'],
+    3 : ['snack stash'],
+    2 : ['regular services'],
+    1 : ['limited services'], 
     'Joe' : ['camera work'],
     'Regnarts' : ['gaming laptop', 'Razer gaming chair'],
     'Tanner' : ['electric keyboard'],
@@ -30,16 +30,16 @@ def authentication(uname):
     match uname:
         # Owner (me, ofc)
         case 'AnomaliScript':
-            return 'o'
+            return 4
         # Moderators
         case 'Regnarts' | 'MrPumpkin' | 'DiligentBuilder':
-            return 'm'
+            return 3
         # Users
         case 'Joe' | 'Ammar' | 'Issac' | 'Maro' | 'Lexie' | 'Tanner' | 'London' | 'Eli' | 'Ryan' | 'Josh':
-            return 'u'
+            return 2
         # Guests
         case 'Guest' | 'guest':
-            return 'g'
+            return 1
         # Not Valid
         case _:
             return None
@@ -47,5 +47,11 @@ def authentication(uname):
 def authorization(uname, stat):
     permissions = []
     personals = []
-    # list what can or can't be seen
+    for i in range(stat, 0, -1):
+        for j in range(len(all_permissions[i])):
+            permissions.append[j]
+    if uname in all_permissions:
+        for i in range(len(all_permissions[uname])):
+            personals.append[i]
+
     return permissions, personals
