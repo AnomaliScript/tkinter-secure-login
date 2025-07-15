@@ -1,18 +1,18 @@
 password_map = {
     'AnomaliScript' : '24Af7NP5XassY$@',
-    'Regnarts' : 'c00lk|d',
-    'MrPumpkin' : 'm&ng0',
-    'DiligentBuilder' : 's4ck0feye$',
-    'Joe' : 'what$up3verybody',
-    'Ammar' : 's1ckdUd3',
-    'Issac' : 'He%m4n',
-    'Maro' : 'm@#n3rW',
-    'Lexie' : 'g0OdmYrn][g',
-    'Tanner' : '0nth3ke&s',
-    'London' : 'pr3ci@teiT',
-    'Eli' : 'h3re4ndN+w',
-    'Ryan' : 'aVp3rs*n',
-    'Josh' : 'P4rad^dD!e'
+    'Regnarts' : 'Vh2@Ay%mO',
+    'MrPumpkin' : 'EOI2w*E5q',
+    'DiligentBuilder' : '$qGYzn9Ax',
+    'Joe' : '#H0FClkZu',
+    'Ammar' : '3BtaP9gX#',
+    'Issac' : '79Rx@TJ!U',
+    'Maro' : '1J$Pls!#Z',
+    'Lexie' : '^5v^bSgAS',
+    'Tanner' : 'qN$IvC1#q',
+    'London' : 'p%3&rdWn0',
+    'Eli' : '#3Qkv*dbi',
+    'Ryan' : 'u%RHyH29@',
+    'Josh' : 'x%q0kwS4s'
 }
 
 # To be used
@@ -44,10 +44,10 @@ def authentication(uname):
         case _:
             return None
         
-def authorization(uname, stat):
+def authorization(uname, power):
     permissions = []
     personals = []
-    for i in range(stat, 0, -1):
+    for i in range(power, 0, -1):
         for j in range(len(all_permissions[i])):
             permissions.append[j]
     if uname in all_permissions:

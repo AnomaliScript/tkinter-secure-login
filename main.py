@@ -34,20 +34,39 @@ class LoginPage(ctk.CTkFrame):
         login_btn.pack(pady=8)
 
     def login(self):
-        new_window = ctk.CTkToplevel(app)
 
+        username = self.username.get()
+        password = self.password.get()
+
+        # Check if username exists
+        if username not in password_map:
+            tkmb.showerror("Login Failed", "Invalid Username")
+            return
+
+        # Check password
+        if password != password_map[username]:
+            tkmb.showwarning("Wrong Password", "Please check your password")
+            return
+
+        # Call authentication logic
+        power = authentication(username)
+
+        if power is None:
+            tkmb.showerror("Login Failed", "Authentication failed.")
+            return
+
+        # Store shared data in the controller
+        self.controller.shared_data["username"] = username
+        self.controller.shared_data["power"] = power
+
+        # Welcome window (optional)
+        new_window = ctk.CTkToplevel(self)
         new_window.title("Brandon's TKinter Login System")
-
         new_window.geometry("350x150")
+        ctk.CTkLabel(new_window, text=f"Welcome, {username}!").pack(pady=20)
 
-        self.controller.username, username = self.username.get()
-        
-        # Authentication
-        self.controller.status = authentication(username) if authentication(username) != None else tkmb.showerror(title="Login Failed", message="Invalid Username")
-        if (self.username.get() != password_map[self.username]):
-            self.controller.show_frame("DashboardPage")
-            tkmb.showwarning(title='Wrong password', message='Please check your password')
-        ctk.CTkLabel(new_window,text=f"Welcome, {username}!").pack()
+        # Move to dashboard
+        self.controller.show_frame("DashboardPage")
 
 
 class DashboardPage(ctk.CTkFrame):
@@ -55,15 +74,23 @@ class DashboardPage(ctk.CTkFrame):
         super().__init__(master)
         self.controller = controller
 
+        username = self.controller.shared_data.get("username")
+        power = self.controller.shared_data.get("power")
+
         label = ctk.CTkLabel(self, text="Welcome to the Dashboard!")
         label.pack(pady=12)
 
         # Authorization
-        permissions, personals = authorization(self.controller.username, self.controller.status)
+        permissions, personals = authorization(username, power)
 
         back_btn = ctk.CTkButton(self, text="Log Out", command=lambda: controller.show_frame("LoginPage"))
         back_btn.pack(pady=8)
 
+    def refresh(self):
+        username = self.controller.shared_data.get("username", "Unknown")
+        status = self.controller.shared_data.get("status", "No Status")
+        self.welcome_label.configure(text=f"Welcome, {username}")
+        self.status_label.configure(text=f"Status: {status}")
 
 class MainApp(ctk.CTk):
     def __init__(self):
@@ -74,6 +101,10 @@ class MainApp(ctk.CTk):
 
         # Page container
         self.pages = {}
+        # self.pages = {page_name: PageClass(master=self, controller=self)}
+
+        self.shared_data = {}
+        # self.shared_data = {anything you want, but remember that it's a dict}
 
         for PageClass in (LoginPage, DashboardPage):
             page_name = PageClass.__name__
@@ -92,6 +123,6 @@ class MainApp(ctk.CTk):
 
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")
-    ctk.set_default_color_theme("blue")
+    ctk.set_default_color_theme("green")
     app = MainApp()
     app.mainloop()
