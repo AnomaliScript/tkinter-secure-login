@@ -59,12 +59,6 @@ class LoginPage(ctk.CTkFrame):
         self.controller.shared_data["username"] = username
         self.controller.shared_data["power"] = power
 
-        # Welcome window (optional)
-        new_window = ctk.CTkToplevel(self)
-        new_window.title("Brandon's TKinter Login System")
-        new_window.geometry("350x150")
-        ctk.CTkLabel(new_window, text=f"Welcome, {username}!").pack(pady=20)
-
         # Move to dashboard
         self.controller.show_frame("DashboardPage")
 
@@ -74,27 +68,41 @@ class DashboardPage(ctk.CTkFrame):
         super().__init__(master)
         self.controller = controller
 
-        username = self.controller.shared_data.get("username")
-        power = self.controller.shared_data.get("power")
-
         label = ctk.CTkLabel(self, text="Welcome to the Dashboard!")
         label.pack(pady=12)
 
-        # Authorization
-        permissions, personals = authorization(username, power)
+        self.welcome_label = ctk.CTkLabel(self, text="")
+        self.welcome_label.pack(pady=8)
+
+        self.status_label = ctk.CTkLabel(self, text="")
+        self.status_label.pack(pady=8)
 
         back_btn = ctk.CTkButton(self, text="Log Out", command=lambda: controller.show_frame("LoginPage"))
         back_btn.pack(pady=8)
 
     def refresh(self):
-        username = self.controller.shared_data.get("username", "Unknown")
-        status = self.controller.shared_data.get("status", "No Status")
+        # Checking for existence
+        username = self.controller.shared_data.get("username")
+        power = self.controller.shared_data.get("power")
+
+        if not username or not power:
+            self.welcome_label.configure(text="augh")
+            self.status_label.configure(text="")
+            return
+
+        # Call authorization once
+        result = authorization(username, power)
+        if result is not None:
+            permissions, personals = result
+        
+        # Update UI
         self.welcome_label.configure(text=f"Welcome, {username}")
-        self.status_label.configure(text=f"Status: {status}")
+        self.status_label.configure(text=f"Status: {power}")
 
 class MainApp(ctk.CTk):
     def __init__(self):
         super().__init__()
+        print("MainApp initialized!")
 
         self.title("CTk Secure Sign-In Simulator")
         self.geometry("400x300")
@@ -119,6 +127,17 @@ class MainApp(ctk.CTk):
         for frame in self.pages.values():
             frame.pack_forget()
         self.pages[page_name].pack(fill="both", expand=True)
+        if hasattr(frame, "refresh"):
+            frame.refresh()
+        frame.pack(fill="both", expand=True)
+
+    def show_frame(self, page_name):
+        for page in self.pages.values():
+            page.pack_forget()
+        page = self.pages[page_name]
+        if hasattr(page, "refresh"):
+            page.refresh()  # ← this runs for the page being shown
+        page.pack(fill="both", expand=True)
 
 
 if __name__ == "__main__":

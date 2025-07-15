@@ -49,9 +49,9 @@ def authorization(uname, power):
     personals = []
     for i in range(power, 0, -1):
         for j in range(len(all_permissions[i])):
-            permissions.append[j]
+            permissions.append(all_permissions[i][j])
     if uname in all_permissions:
         for i in range(len(all_permissions[uname])):
-            personals.append[i]
+            personals.append(all_permissions[uname][i])
 
     return permissions, personals
