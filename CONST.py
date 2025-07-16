@@ -17,13 +17,20 @@ password_map = {
 
 # To be used
 all_permissions = {
-    4 : ['the dead bodies', 'journal', 'sketchbook', '1Password password'],
-    3 : ['snack stash'],
+    4 : ['the dead bodies', 'journal', 'sketchbook', '3D-Printed Glock 19', '1Password password'],
+    3 : ['snack stash', '2D Printer', 'Anomali\'s setuid'],
     2 : ['regular services'],
     1 : ['limited services'], 
     'Joe' : ['camera work'],
     'Regnarts' : ['gaming laptop', 'Razer gaming chair'],
     'Tanner' : ['electric keyboard'],
+}
+
+authority_enums = {
+    4 : "Boss", 
+    3 : "Underboss", 
+    2 : "Capo", 
+    1 : "Soldier"
 }
 
 def authentication(uname):
@@ -44,10 +51,10 @@ def authentication(uname):
         case _:
             return None
         
-def authorization(uname, power):
+def authorization(uname, authority):
     permissions = []
     personals = []
-    for i in range(power, 0, -1):
+    for i in range(authority, 0, -1):
         for j in range(len(all_permissions[i])):
             permissions.append(all_permissions[i][j])
     if uname in all_permissions:

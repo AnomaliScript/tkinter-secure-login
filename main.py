@@ -1,6 +1,6 @@
 import customtkinter as ctk
 import tkinter.messagebox as tkmb
-from CONST import password_map, authentication, authorization
+from CONST import password_map, authentication, authorization, authority_enums
 
 # Selecting GUI theme - dark, light , system (for system default)
 ctk.set_appearance_mode("dark")
@@ -49,15 +49,15 @@ class LoginPage(ctk.CTkFrame):
             return
 
         # Call authentication logic
-        power = authentication(username)
+        authority = authentication(username)
 
-        if power is None:
+        if authority is None:
             tkmb.showerror("Login Failed", "Authentication failed.")
             return
 
         # Store shared data in the controller
         self.controller.shared_data["username"] = username
-        self.controller.shared_data["power"] = power
+        self.controller.shared_data["authority"] = authority
 
         # Move to dashboard
         self.controller.show_frame("DashboardPage")
@@ -74,30 +74,44 @@ class DashboardPage(ctk.CTkFrame):
         self.welcome_label = ctk.CTkLabel(self, text="")
         self.welcome_label.pack(pady=8)
 
-        self.status_label = ctk.CTkLabel(self, text="")
-        self.status_label.pack(pady=8)
+        self.authority = ctk.CTkLabel(self, text="")
+        self.authority.pack(pady=8)
+
+        self.perm = ctk.CTkLabel(self, text="")
+        self.perm.pack(pady=8)
+
+        self.pers = ctk.CTkLabel(self, text="")
+        self.pers.pack(pady=4)
 
         back_btn = ctk.CTkButton(self, text="Log Out", command=lambda: controller.show_frame("LoginPage"))
-        back_btn.pack(pady=8)
+        back_btn.pack(pady=4)
 
     def refresh(self):
         # Checking for existence
         username = self.controller.shared_data.get("username")
-        power = self.controller.shared_data.get("power")
+        authority = self.controller.shared_data.get("authority")
 
-        if not username or not power:
-            self.welcome_label.configure(text="augh")
-            self.status_label.configure(text="")
+        if not username and not authority:
+            self.welcome_label.configure(text="User not found")
+            self.authority.configure(text="")
             return
 
         # Call authorization once
-        result = authorization(username, power)
+        result = authorization(username, authority)
         if result is not None:
             permissions, personals = result
+
+        # Authority to a more well-known title
+        auth = authority_enums[authority]
+        
+        # Asset Widgets
+
         
         # Update UI
         self.welcome_label.configure(text=f"Welcome, {username}")
-        self.status_label.configure(text=f"Status: {power}")
+        self.authority.configure(text=f"Status: {auth}")
+        self.perm.configure(text=f"You have access to: {permissions}")
+        self.pers.configure(text=f"You has personal access to: {personals}")
 
 class MainApp(ctk.CTk):
     def __init__(self):
@@ -105,7 +119,7 @@ class MainApp(ctk.CTk):
         print("MainApp initialized!")
 
         self.title("CTk Secure Sign-In Simulator")
-        self.geometry("400x300")
+        self.geometry("800x300")
 
         # Page container
         self.pages = {}
