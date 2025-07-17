@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import tkinter.messagebox as tkmb
-from CONST import password_map, authentication, authorization, authority_enums
+from CONST import password_map, authentication, authorization, authority_enums, authorities
+from utils import hash_password, verify_password
 
 # Selecting GUI theme - dark, light , system (for system default)
 ctk.set_appearance_mode("dark")
@@ -12,7 +13,7 @@ app = ctk.CTk()
 app.geometry("500x500")
 app.title("Brandon's Login System")
 
-# ChatGPT Code Example
+# ChatGPT Code Example (Now it's my version)
 
 import customtkinter as ctk
 
@@ -33,18 +34,28 @@ class LoginPage(ctk.CTkFrame):
         login_btn = ctk.CTkButton(self, text="Login", command=self.login)
         login_btn.pack(pady=8)
 
+        login_btn = ctk.CTkButton(self, text="Don't Have An Account?", command=lambda: controller.show_frame("CreateAccount"))
+        login_btn.pack(pady=8)
+
+        self.controller.stored_hashes = {name: hash_password(password_map[name]) for name in password_map}
+
     def login(self):
+        # EMPTY (imperative mood)!
+        password_map = {}
 
         username = self.username.get()
         password = self.password.get()
 
         # Check if username exists
-        if username not in password_map:
+        if username not in self.controller.stored_hashes:
             tkmb.showerror("Login Failed", "Invalid Username")
             return
 
-        # Check password
-        if password != password_map[username]:
+        # Get stored hashed password (password checking v2!)
+        stored_hash = self.controller.stored_hashes[username]
+
+        # Check password using Argon2
+        if not verify_password(stored_hash, password):
             tkmb.showwarning("Wrong Password", "Please check your password")
             return
 
@@ -61,6 +72,36 @@ class LoginPage(ctk.CTkFrame):
 
         # Move to dashboard
         self.controller.show_frame("DashboardPage")
+
+
+# This page was created mostly by myself w/o AI
+class CreateAccount(ctk.CTkFrame):
+    def __init__(self, master, controller):
+        super().__init__(master)
+        self.controller = controller
+
+        label = ctk.CTkLabel(self, text="Sign Up!")
+        label.pack(pady=12)
+
+        self.username = ctk.CTkEntry(self, placeholder_text="Username")
+        self.username.pack(pady=8)
+
+        self.password = ctk.CTkEntry(self, placeholder_text="Password", show="*")
+        self.password.pack(pady=8)
+
+        submit_btn = ctk.CTkButton(self, text="Submit", command=self.submit)
+        submit_btn.pack(pady=8)
+
+    def submit(self):
+        username = self.username.get()
+        password = self.password.get()
+
+        # password_map[username] = password
+        self.controller.stored_hashes[username] = hash_password(password)
+        authorities[username] = 1
+
+        # Move back to login screen
+        self.controller.show_frame("LoginPage")
 
 
 class DashboardPage(ctk.CTkFrame):
@@ -128,7 +169,10 @@ class MainApp(ctk.CTk):
         self.shared_data = {}
         # self.shared_data = {anything you want, but remember that it's a dict}
 
-        for PageClass in (LoginPage, DashboardPage):
+        # Sharing stored hashes
+        self.stored_hashes = {}
+
+        for PageClass in (LoginPage, CreateAccount, DashboardPage):
             page_name = PageClass.__name__
             frame = PageClass(master=self, controller=self)
             self.pages[page_name] = frame

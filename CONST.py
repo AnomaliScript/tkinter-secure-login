@@ -1,3 +1,5 @@
+# Optimally, these passwords shouldn't even be visible, but eh I can't do that yet ¯\_(ツ)_/¯
+# At least the new accounts' passwords will be safe
 password_map = {
     'AnomaliScript' : '24Af7NP5XassY$@',
     'Regnarts' : 'Vh2@Ay%mO',
@@ -13,6 +15,23 @@ password_map = {
     'Eli' : '#3Qkv*dbi',
     'Ryan' : 'u%RHyH29@',
     'Josh' : 'x%q0kwS4s'
+}
+
+authorities = {
+    'AnomaliScript' : 4,
+    'Regnarts' : 3,
+    'MrPumpkin' : 3,
+    'DiligentBuilder' : 3,
+    'Joe' : 2,
+    'Ammar' : 2,
+    'Issac' : 2,
+    'Maro' : 2,
+    'Lexie' : 2,
+    'Tanner' : 2,
+    'London' : 2,
+    'Eli' : 2,
+    'Ryan' : 2,
+    'Josh' : 2
 }
 
 # To be used
@@ -34,22 +53,7 @@ authority_enums = {
 }
 
 def authentication(uname):
-    match uname:
-        # Owner (me, ofc)
-        case 'AnomaliScript':
-            return 4
-        # Moderators
-        case 'Regnarts' | 'MrPumpkin' | 'DiligentBuilder':
-            return 3
-        # Users
-        case 'Joe' | 'Ammar' | 'Issac' | 'Maro' | 'Lexie' | 'Tanner' | 'London' | 'Eli' | 'Ryan' | 'Josh':
-            return 2
-        # Guests
-        case 'Guest' | 'guest':
-            return 1
-        # Not Valid
-        case _:
-            return None
+    return authorities[uname]
         
 def authorization(uname, authority):
     permissions = []
