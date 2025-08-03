@@ -7,12 +7,12 @@ https://sites.google.com/view/brandons-hs-portfolio/summer-2025/ctk-secure-sign-
 
 ## Sample Login Tests
 You can test using these logins within my app, and they're hard-coded (username, password):
-'Regnarts' : 'Vh2@Ay%mO'
-'Pumpkin' : 'EOI2w*E5q'
-'Diligent' : '$qGYzn9Ax'
-'Joe' : '#H0FClkZu'
-'Ammar' : '3BtaP9gX#'
-'Issac' : '79Rx@TJ!U'
+'Regnarts' : 'Vh2@Ay%mO' <br>
+'Pumpkin' : 'EOI2w*E5q' <br>
+'Diligent' : '$qGYzn9Ax' <br>
+'Joe' : '#H0FClkZu' <br>
+'Ammar' : '3BtaP9gX#' <br>
+'Issac' : '79Rx@TJ!U' <br>
 
 ## Create an "Account"!
 Don't worry, I didn't make it so that every account was hard-coded, I made a "Create an Account" feature.
