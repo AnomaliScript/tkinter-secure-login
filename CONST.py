@@ -2,8 +2,8 @@
 # At least the new accounts' passwords will be safe
 password_map = {
     'Regnarts' : 'Vh2@Ay%mO',
-    'MrPumpkin' : 'EOI2w*E5q',
-    'DiligentBuilder' : '$qGYzn9Ax',
+    'Pumpkin' : 'EOI2w*E5q',
+    'Diligent' : '$qGYzn9Ax',
     'Joe' : '#H0FClkZu',
     'Ammar' : '3BtaP9gX#',
     'Issac' : '79Rx@TJ!U',
