@@ -3,6 +3,11 @@ import tkinter.messagebox as tkmb
 from CONST import password_map, authentication, authorization, authority_enums, authorities
 from utils import hash_password, verify_password
 
+# YubiKey implementation
+from yubico_client import Yubico
+CLIENT_ID = '113567'
+yubico = Yubico(CLIENT_ID)
+
 # Selecting GUI theme - dark, light , system (for system default)
 ctk.set_appearance_mode("dark")
 
@@ -12,8 +17,6 @@ ctk.set_default_color_theme("green")
 app = ctk.CTk()
 app.geometry("500x500")
 app.title("Brandon's Login System")
-
-# ChatGPT Code Example (Now it's my version)
 
 import customtkinter as ctk
 
@@ -35,6 +38,9 @@ class LoginPage(ctk.CTkFrame):
         login_btn.pack(pady=8)
 
         login_btn = ctk.CTkButton(self, text="Don't Have An Account?", command=lambda: controller.show_frame("CreateAccount"))
+        login_btn.pack(pady=8)
+
+        login_btn = ctk.CTkButton(self, text="YubiKey Login", command=lambda: controller.show_frame("YubiKeyLoginPage"))
         login_btn.pack(pady=8)
 
         self.controller.stored_hashes = {name: hash_password(password_map[name]) for name in password_map}
@@ -72,6 +78,39 @@ class LoginPage(ctk.CTkFrame):
 
         # Move to dashboard
         self.controller.show_frame("DashboardPage")
+
+
+class YubiKeyLoginPage(ctk.CTkFrame):
+    def __init__(self, master, controller):
+        super().__init__(master)
+        self.controller = controller
+
+        label = ctk.CTkLabel(self, text="!! Restricted Access !!")
+        label.pack(pady=12)
+
+        self.otp = ctk.CTkEntry(self, placeholder_text="OTP")
+        self.otp.pack(pady=8)
+
+        submit_btn = ctk.CTkButton(self, text="Submit", command=self.submit)
+        submit_btn.pack(pady=8)
+
+        back_btn = ctk.CTkButton(self, text="Back to Regular Login", command=lambda: controller.show_frame("LoginPage"))
+        back_btn.pack(pady=4)
+
+    def submit(self):
+        otp = self.otp.get()
+
+        try:
+            if yubico.verify(otp):
+                self.controller.show_frame("DashboardPage")
+                self.controller.shared_data["username"] = "AnomaliScript"
+                self.controller.shared_data["authority"] = 4
+            else:
+                tkmb.showerror("Access Denied", "Invalid OTP.")
+                return
+        except Exception as e:
+            tkmb.showerror("Validation error", str(e))
+            return
 
 
 # This page was created mostly by myself w/o AI
@@ -172,7 +211,7 @@ class MainApp(ctk.CTk):
         # Sharing stored hashes
         self.stored_hashes = {}
 
-        for PageClass in (LoginPage, CreateAccount, DashboardPage):
+        for PageClass in (LoginPage, CreateAccount, DashboardPage, YubiKeyLoginPage):
             page_name = PageClass.__name__
             frame = PageClass(master=self, controller=self)
             self.pages[page_name] = frame

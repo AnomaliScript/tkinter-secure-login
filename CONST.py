@@ -1,7 +1,6 @@
 # Optimally, these passwords shouldn't even be visible, but eh I can't do that yet ¯\_(ツ)_/¯
 # At least the new accounts' passwords will be safe
 password_map = {
-    'AnomaliScript' : '24Af7NP5XassY$@',
     'Regnarts' : 'Vh2@Ay%mO',
     'MrPumpkin' : 'EOI2w*E5q',
     'DiligentBuilder' : '$qGYzn9Ax',
