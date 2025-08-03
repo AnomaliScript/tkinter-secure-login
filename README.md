@@ -1,8 +1,8 @@
 # tkinter-secure-login
 My take on a Python Secure Login System.  I plan to use my YubiKey as one way to authenticate the user, as well as having a "guest" mode, which will require proper authorization in order to separate what each different login will have access to in the app. 
 
-## 1. [Download the latest release](https://github.com/YourRepo/your-app/releases) and run the program.
-2. Or, run from code:
+## [Download the latest release](https://github.com/tkinter-secure-login/your-app/releases) and run the program
+Or, run from code:
    - Clone this repo
    - Run: `pip install -r requirements.txt`
 
