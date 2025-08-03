@@ -6,12 +6,11 @@ I placed my documentation for this project in my GoogleSite portfolio, feel free
 https://sites.google.com/view/brandons-hs-portfolio/summer-2025/ctk-secure-sign-in-simulator
 
 ## Sample Login Tests
-You can test using these logins within my app, and they're hard-coded (username, password):
+You can test using these logins within my app, and they're hard-coded (username, password): <br>
 'Regnarts' : 'Vh2@Ay%mO' <br>
 'Pumpkin' : 'EOI2w*E5q' <br>
 'Diligent' : '$qGYzn9Ax' <br>
 'Joe' : '#H0FClkZu' <br>
-'Ammar' : '3BtaP9gX#' <br>
 'Issac' : '79Rx@TJ!U' <br>
 
 ## Create an "Account"!
